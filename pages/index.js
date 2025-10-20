@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { getPosts } from '../utils/mdx-utils';
-
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import Layout, { GradientBackground } from '../components/Layout';
@@ -9,6 +8,9 @@ import { getGlobalData } from '../utils/global-data';
 import SEO from '../components/SEO';
 
 export default function Index({ posts, globalData }) {
+  // Ensure posts is always an array to prevent "object is not iterable" error
+  const safePosts = Array.isArray(posts) ? posts : [];
+  
   return (
     <Layout>
       <SEO title={globalData.name} description={globalData.blogTitle} />
@@ -18,7 +20,7 @@ export default function Index({ posts, globalData }) {
           {globalData.blogTitle}
         </h1>
         <ul className="w-full">
-          {posts.map((post) => (
+          {safePosts.map((post) => (
             <li
               key={post.filePath}
               className="transition border border-b-0 bg-white/10 border-gray-800/10 md:first:rounded-t-lg md:last:rounded-b-lg backdrop-blur-lg dark:bg-black/30 hover:bg-white/20 dark:hover:bg-black/50 dark:border-white/10 last:border-b"
@@ -70,6 +72,5 @@ export default function Index({ posts, globalData }) {
 export function getStaticProps() {
   const posts = getPosts();
   const globalData = getGlobalData();
-
   return { props: { posts, globalData } };
 }
